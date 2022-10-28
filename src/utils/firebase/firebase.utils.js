@@ -5,7 +5,9 @@ import {
     signInWithPopup, 
     GoogleAuthProvider,
     createUserWithEmailAndPassword,
-    signInWithEmailAndPassword
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
 } from 'firebase/auth'
 import {
     getFirestore,
@@ -21,13 +23,13 @@ const firebaseConfig = {
     storageBucket: "crwn-clothing-db-c4449.appspot.com",
     messagingSenderId: "671853385707",
     appId: "1:671853385707:web:0bc2fa9ed6e738dceb2bae"
-  };
+};
   
-  // Initialize Firebase
-  const firebaseApp = initializeApp(firebaseConfig);
-  console.log(firebaseApp);
+// Initialize Firebase
+const firebaseApp = initializeApp(firebaseConfig);
+console.log(firebaseApp);
 
-  const googleProvider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
 
 googleProvider.setCustomParameters({
     prompt: "select_account"
@@ -39,10 +41,12 @@ export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googlePro
 
 export const db = getFirestore();
 
-export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) => {
-    const userDocRef = doc(db, 'users', userAuth.uid)
+export const createUserDocumentFromAuth = async (
+    userAuth, additionalInformation = {}
+) => {
+    if (!userAuth) return;
 
-    console.log(userDocRef);
+    const userDocRef = doc(db, 'users', userAuth.uid)
 
     const userSnapshot = await getDoc(userDocRef);
 
@@ -75,3 +79,7 @@ export const signInAuthUserWithEmailAndPassword = async (email, password) => {
 
     return await signInWithEmailAndPassword(auth, email, password);
 }
+
+export const signOutUser = async () => await signOut(auth);
+
+export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback);
