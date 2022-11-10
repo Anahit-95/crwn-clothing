@@ -17,12 +17,12 @@ export const CartDropdownContainer = styled.div`
   top: 90px;
   right: 40px;
   z-index: 5;
+  white-space: nowrap;
 
   ${BaseButton}
   ${GoogleSignInButton}
   ${InvertedButton} {
     margin-top: auto;
-    white-space: nowrap;
   }
 `;
 
